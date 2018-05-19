@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButton(1))
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -50,8 +50,13 @@ public class PlayerController : MonoBehaviour
         using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
         using (System.IO.BinaryWriter bw = new System.IO.BinaryWriter(ms))
         {
+            Vector3 desPosition = transform.position;
+            if (agent.remainingDistance > agent.stoppingDistance)
+            {
+                desPosition += agent.desiredVelocity;
+            }
             bw.Write((int)(NetMessage.UpdatePosition));
-            bw.Write(transform.position);
+            bw.Write(desPosition);
             Networking.Instance.SendUnReliable(ms.ToArray());
         }
     }
