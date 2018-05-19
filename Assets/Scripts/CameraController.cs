@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         cam = GetComponent<Camera>();
-        startPosition = transform.position;
+        startPosition = transform.position - player.transform.position;
     }
     void Update()
     {

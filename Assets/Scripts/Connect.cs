@@ -23,7 +23,7 @@ public class Connect : MonoBehaviour
 
         NetManager.Instance.nickname = nicknameField.text;
 
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Demo");
     }
 
     public void Update()
