@@ -128,6 +128,13 @@ public class NetManager : Singleton<NetManager>
                                 SpawnEnemy(id, gameID, Vector3.zero);
                             }
                             break;
+                        case NetMessage.EnemyDied:
+                            {
+                                int id = br.ReadInt32();
+                                Destroy(entities[id].gameObject);
+                                entities.Remove(id);
+                            }
+                            break;
                         case NetMessage.GetEnemies:
                             {
                                 int count = br.ReadInt32();

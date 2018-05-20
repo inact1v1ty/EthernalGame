@@ -22,6 +22,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Alpha1)){
+            UseAbility(1);
+        }
         if (Input.GetMouseButton(1))
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -58,6 +61,23 @@ public class PlayerController : MonoBehaviour
             bw.Write((int)(NetMessage.UpdatePosition));
             bw.Write(desPosition);
             Networking.Instance.SendUnReliable(ms.ToArray());
+        }
+    }
+
+    void UseAbility(int type){
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 100f, LayerMask.NameToLayer("Player")))
+        {
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            using (System.IO.BinaryWriter bw = new System.IO.BinaryWriter(ms))
+            {
+                bw.Write((int)(NetMessage.UseAbility));
+                bw.Write(type);
+                bw.Write(hit.point);
+                Networking.Instance.SendReliable(ms.ToArray());
+            }
         }
     }
 }
