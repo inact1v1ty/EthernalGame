@@ -29,6 +29,7 @@ public class Connect : MonoBehaviour
         Networking.Instance.BeginReceive();
 
         NetManager.Instance.nickname = nicknameField.text;
+        NetManager.Instance.address = EtheriumAccount.Instance.address;
 
         SceneManager.LoadScene("Demo");
     }
