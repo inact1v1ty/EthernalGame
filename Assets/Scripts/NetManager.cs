@@ -10,8 +10,10 @@ public class NetManager : Singleton<NetManager>
 {
     public string nickname;
     public GameObject playerPrefab;
+
+    public List<GameObject> enemyPrefabs;
     Dictionary<int, NetPlayer> players = new Dictionary<int, NetPlayer>();
-    Dictionary<int, GameObject> entities = new Dictionary<int, GameObject>();
+    Dictionary<int, NetEnemy> entities = new Dictionary<int, NetEnemy>();
     protected NetManager() { }
 
     void Start()
@@ -21,7 +23,7 @@ public class NetManager : Singleton<NetManager>
 
     void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Game")
+        if (scene.name == "Demo")
         {
             using (MemoryStream ms = new MemoryStream())
             using (BinaryWriter bw = new BinaryWriter(ms))
@@ -38,6 +40,12 @@ public class NetManager : Singleton<NetManager>
                 bw.Write((int)(NetMessage.GetPlayers));
                 Networking.Instance.SendReliable(ms.ToArray());
             }
+            /*using (MemoryStream ms = new MemoryStream())
+            using (BinaryWriter bw = new BinaryWriter(ms))
+            {
+                bw.Write((int)(NetMessage.GetEnemies));
+                Networking.Instance.SendReliable(ms.ToArray());
+            }*/
         }
     }
 
@@ -77,6 +85,12 @@ public class NetManager : Singleton<NetManager>
                                         SpawnPlayer(id, nickname, position);
                                     }
                                 }
+                                using (MemoryStream ms2 = new MemoryStream())
+                                using (BinaryWriter bw = new BinaryWriter(ms2))
+                                {
+                                    bw.Write((int)(NetMessage.GetEnemies));
+                                    Networking.Instance.SendReliable(ms2.ToArray());
+                                }
                             }
                             break;
                         case NetMessage.PlayerConnected:
@@ -87,6 +101,11 @@ public class NetManager : Singleton<NetManager>
                             }
                             break;
                         case NetMessage.PlayerDisconnected:
+                            {
+                                int id = br.ReadInt32();
+                                Destroy(players[id].gameObject);
+                                players.Remove(id);
+                            }
                             break;
                         case NetMessage.UpdatePosition:
                             {
@@ -101,16 +120,31 @@ public class NetManager : Singleton<NetManager>
                         case NetMessage.SpawnEnemy:
                             {
                                 int id = br.ReadInt32();
-                                var go = Instantiate(playerPrefab, new Vector3(3f, -4.62f, 65.35f), Quaternion.identity) as GameObject;
-                                entities.Add(id, go);
+                                int gameID = br.ReadInt32();
+                                SpawnEnemy(id, gameID, Vector3.zero);
                             }
                             break;
+                        case NetMessage.GetEnemies:
+                            {
+                                int count = br.ReadInt32();
+                                for (int i = 0; i < count; i++)
+                                {
+                                    int id = br.ReadInt32();
+                                    if (!entities.ContainsKey(id))
+                                    {
+                                        int gameID = br.ReadInt32();
+                                        Vector3 position = br.ReadVector3();
+                                        SpawnEnemy(id, gameID, position);
+                                    }
+                                }
+                            }
+                            break;         
                         case NetMessage.UpdateEnemyPosition:
                             {
                                 int id = br.ReadInt32();
                                 if (entities.ContainsKey(id)){
                                     Vector3 position = br.ReadVector3();
-                                    entities[id].transform.position = position;
+                                    entities[id].UpdatePosition(position);
                                 }
                             }
                             break;
@@ -127,5 +161,11 @@ public class NetManager : Singleton<NetManager>
         netPlayer.id = id;
         netPlayer.Nickname = nickname;
         players.Add(id, netPlayer);
+    }
+    void SpawnEnemy(int id, int gameID, Vector3 position){
+        var go = Instantiate(enemyPrefabs[gameID], position, Quaternion.identity) as GameObject;
+        var netEnemy = go.GetComponent<NetEnemy>();
+        netEnemy.id = id;
+        entities.Add(id, netEnemy);
     }
 }

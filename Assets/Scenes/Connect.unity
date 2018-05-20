@@ -168,6 +168,9 @@ MonoBehaviour:
   nickname: 
   playerPrefab: {fileID: 1841791666729784, guid: fe5639ab93bbb7a4595de7f44bba76e9,
     type: 2}
+  enemyPrefabs:
+  - {fileID: 0}
+  - {fileID: 1841791666729784, guid: f24a0492169c07e4eba293e3309a0e9b, type: 2}
 --- !u!1 &133079388
 GameObject:
   m_ObjectHideFlags: 0

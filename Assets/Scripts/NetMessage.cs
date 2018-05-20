@@ -7,5 +7,6 @@ public enum NetMessage
     PlayerDisconnected = 4,
     UpdatePosition = 5,
     SpawnEnemy = 6,
-    UpdateEnemyPosition = 7
+    GetEnemies = 7,
+    UpdateEnemyPosition = 8
 }
