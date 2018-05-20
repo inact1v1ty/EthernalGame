@@ -13,6 +13,7 @@ public class Connect : MonoBehaviour
     public InputField ipField;
     public InputField portField;
     public InputField nicknameField;
+    public InputField privateKeyField;
 
     public void FireConnect()
     {

@@ -11,6 +11,7 @@ public class NetManager : Singleton<NetManager>
     public string nickname;
     public GameObject playerPrefab;
     Dictionary<int, NetPlayer> players = new Dictionary<int, NetPlayer>();
+    Dictionary<int, GameObject> entities = new Dictionary<int, GameObject>();
     protected NetManager() { }
 
     void Start()
@@ -94,6 +95,22 @@ public class NetManager : Singleton<NetManager>
                                 {
                                     Vector3 position = br.ReadVector3();
                                     players[id].UpdatePosition(position);
+                                }
+                            }
+                            break;
+                        case NetMessage.SpawnEnemy:
+                            {
+                                int id = br.ReadInt32();
+                                var go = Instantiate(playerPrefab, new Vector3(3f, -4.62f, 65.35f), Quaternion.identity) as GameObject;
+                                entities.Add(id, go);
+                            }
+                            break;
+                        case NetMessage.UpdateEnemyPosition:
+                            {
+                                int id = br.ReadInt32();
+                                if (entities.ContainsKey(id)){
+                                    Vector3 position = br.ReadVector3();
+                                    entities[id].transform.position = position;
                                 }
                             }
                             break;
