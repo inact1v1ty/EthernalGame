@@ -19,10 +19,17 @@ public class Connect : MonoBehaviour
     {
         var ip = IPAddress.Parse(ipField.text);
         var port = int.Parse(portField.text);
+
+        EtheriumAccount.Instance.privateKey = privateKeyField.text;
+        EtheriumAccount.Instance.Init();
+        StartCoroutine (EtheriumAccount.Instance.getBlockNumber());
+        StartCoroutine (EtheriumAccount.Instance.payForCreation());
+
         Networking.Instance.Connect(new IPEndPoint(ip, port));
         Networking.Instance.BeginReceive();
 
         NetManager.Instance.nickname = nicknameField.text;
+        NetManager.Instance.address = EtheriumAccount.Instance.address;
 
         SceneManager.LoadScene("Demo");
     }

@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class NetManager : Singleton<NetManager>
 {
     public string nickname;
+    public string address;
     public GameObject playerPrefab;
 
     public List<GameObject> enemyPrefabs;
@@ -30,6 +31,9 @@ public class NetManager : Singleton<NetManager>
             {
                 bw.Write((int)NetMessage.Nickname);
                 var s = Encoding.UTF8.GetBytes(nickname);
+                bw.Write(s.Length);
+                bw.Write(s);
+                s = Encoding.UTF8.GetBytes(address);
                 bw.Write(s.Length);
                 bw.Write(s);
                 Networking.Instance.SendReliable(ms.ToArray());
