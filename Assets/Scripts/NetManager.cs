@@ -131,8 +131,10 @@ public class NetManager : Singleton<NetManager>
                         case NetMessage.EnemyDied:
                             {
                                 int id = br.ReadInt32();
-                                Destroy(entities[id].gameObject);
-                                entities.Remove(id);
+                                if(entities.ContainsKey(id)){
+                                    entities[id].Death();
+                                    entities.Remove(id);
+                                }
                             }
                             break;
                         case NetMessage.GetEnemies:

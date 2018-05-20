@@ -23,7 +23,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Alpha1)){
-            UseAbility(1);
+            var target = UseAbility(1);
+            StartCoroutine(Turn(target));
+            GetComponent<Animator>().SetTrigger("Attack");
         }
         if (Input.GetMouseButton(1))
         {
@@ -64,7 +66,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void UseAbility(int type){
+    Vector3 UseAbility(int type){
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -78,6 +80,25 @@ public class PlayerController : MonoBehaviour
                 bw.Write(hit.point);
                 Networking.Instance.SendReliable(ms.ToArray());
             }
+            return hit.point;
         }
+        return Vector3.zero;
+    }
+
+    IEnumerator Turn(Vector3 target){
+        var direction = (target - transform.position);
+        direction = Vector3.ProjectOnPlane(direction, Vector3.up).normalized;
+        while (Mathf.Abs(Quaternion.Angle(transform.rotation,
+            transform.rotation * Quaternion.FromToRotation(transform.forward, direction))) > 10)
+        {
+            transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                transform.rotation * Quaternion.FromToRotation(transform.forward, direction),
+                800f * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    void Hit(Object obj){
+
     }
 }

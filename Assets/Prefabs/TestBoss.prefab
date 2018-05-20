@@ -1197,8 +1197,8 @@ MonoBehaviour:
   id: 0
   gameID: 1
   character: {fileID: 114888079347314738}
-  speed: 3
-  acceleration: 8
+  speed: 0.65
+  acceleration: 3
   stoppingDistance: 0.2
 --- !u!114 &114888079347314738
 MonoBehaviour:

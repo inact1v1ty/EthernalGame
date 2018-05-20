@@ -38,4 +38,8 @@ public class NetEnemy : MonoBehaviour {
     {
         targetPosition = position;
     }
+
+	public void Death(){
+		GetComponent<Animator>().SetBool("DeathTrigger", true);
+	}
 }

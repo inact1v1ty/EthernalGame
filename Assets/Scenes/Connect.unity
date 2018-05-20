@@ -166,11 +166,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nickname: 
+  address: 
   playerPrefab: {fileID: 1841791666729784, guid: fe5639ab93bbb7a4595de7f44bba76e9,
     type: 2}
   enemyPrefabs:
   - {fileID: 0}
-  - {fileID: 1841791666729784, guid: f24a0492169c07e4eba293e3309a0e9b, type: 2}
+  - {fileID: 1198061473564444, guid: b82d1dbc1886c3d42a8ec87670dbe956, type: 2}
 --- !u!1 &133079388
 GameObject:
   m_ObjectHideFlags: 0
